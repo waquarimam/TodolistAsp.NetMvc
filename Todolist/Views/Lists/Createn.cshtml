@@ -34,7 +34,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" onclick="savedetails()" />
+                <input type="submit" value="Create" class="btn btn-default" onclick="return savedetails()" />
             </div>
         </div>
     </div>
@@ -47,6 +47,7 @@
 
     }
 
+<script src="~/Scripts/jquery.validate.js"></script>
 
     <script type="text/javascript">
 
@@ -66,11 +67,15 @@
         var DueDate = $("DueDate").val();
         var MarkDone = $("MarkDone").val();
 
-       
+        if (Title == "" || DueDate == "") {
+            alert("please enter both the field");
+            return false;
+        }
+        else {
             var insertemp = { "UserId": UserId, "Title": Title, "DueDate": DueDate, "Done": MarkDone };
             $.post('/List/Createn', insertemp,
                 function (data) { if (data == 0) { location = location.href; } }, 'json');
             alert("saved");
         }
-    
+    }
     </script>
