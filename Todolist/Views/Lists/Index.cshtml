@@ -1,0 +1,219 @@
+﻿@model IEnumerable<Todolist.Models.List>
+@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "Index";
+    
+}
+<script type="text/javascript" class="init">
+      $(document).ready(function() {
+        $('#tableData').dataTable();
+      });
+    
+</script>
+
+
+
+
+    
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/Content/sweetalert/sweet-alert.css" rel="stylesheet" />
+
+
+<style type="text/css">
+    #2 {
+        background: green !important;
+        background-color: green !important;
+    }
+    #1 {
+        background-color:transparent !important;
+    }
+    .grey {
+        background: green !important;
+    }
+</style>
+<h2>Lists</h2>
+
+<p>
+    <input type="button" value="Add To do list" onclick="createpopup()"/>
+</p>
+<table class="table" id="tableData">
+    <thead>
+        <tr>
+            <th>
+                Records
+
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DueDate)
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @{int count = 0; }
+    @foreach (var item in Model)
+    {
+        if (@item.Done == 2)
+        {
+
+            <tr class="grey">
+         
+               
+                <td>
+                    @(count += 1)
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DueDate)
+                </td>
+                <td>
+                    <input type="hidden" value="@item.Done" id="row" name="row" />
+                    
+                    <input type="button" id="Delete" value="Delete" onclick="doconfirm(@item.Id)" />
+                </td>
+            </tr>
+        }
+        else
+        {
+        <tr>
+            <td>
+                @(count += 1)
+
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DueDate)
+            </td>
+            <td>
+                <input type="hidden" value="@item.Done" id="row" name="row" />
+                <input type="button" value="Edit" onclick="Editpopup(@item.Id)" />
+                <input type="button" id="Done" value="MarkDone" onclick="MarkDone(@item.Id)" />
+                <input type="button" id="Delete" value="Delete" onclick="doconfirm(@item.Id)" />
+            </td>
+
+        </tr>
+        }
+
+    }
+        </tbody> 
+</table>
+<div id ="openpopup" style="display:none"></div>
+
+<script type="text/javascript">
+    function createpopup() {
+        var x = $("#openpopup");
+        x.load('/Lists/Createn', function () {
+            x.dialog({
+                show:{
+                    effect: "blind",
+                    duration:200
+                },
+                hide:{
+                    effect: "explode",
+                    duration:1000
+
+                },
+                modal: true,
+                width: 450,
+                height: 500,
+                title: "Add To do List",
+                resizable:false
+
+            });
+        });
+    }
+    function Editpopup(Id) {
+        var x = $("#openpopup");
+        x.load("/Lists/Editn?Id=" + Id, function () {
+            x.dialog({
+                show:{
+                    effect: "blind",
+                    duration: 200
+                },
+                hide:{
+                    effect: "explode",
+                    duration: 1000
+
+                },
+                modal:true,
+                width: 450,
+                height: 500,
+                title: "Edit To do List",
+                resizable: false
+
+            });
+        }
+        );
+
+    }
+    function MarkDone(Id)
+    {
+        
+        $.ajax({
+            type:"Post",
+            url:"/Lists/Done?Id="+Id,
+            contentType: "application/json; charset=utf-8",
+            data: '{"Id":"' + Id+'"}',
+            dataType:"json",
+            success:function(result)
+            {
+                alert("Mark Done");
+                location.reload();
+            },
+            error:function(result){
+                alert ("Not Done");
+            }
+        });
+    }
+
+    function doconfirm(Id) {
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+.then((willDelete) => {
+    if (willDelete) {
+      
+           
+        $.ajax({
+            type:"POST",
+            url:"/Lists/Deleten?Id="+Id,
+            contentType: "application/json; charset=utf-8",
+            data: '{"Id":"' + Id+'"}',
+            dataType:"json",
+            success:function(result)
+            {
+                
+                swal("yup! Your list has been deleted!", {
+                    icon: "success",});
+                    location.reload();
+            },
+            error:function(result){
+                alert ("Not Delete");
+            }
+        });
+   
+   
+}   
+     else {
+        swal("Your imaginary file is safe!");
+    }
+});
+       
+
+   
+    }
+</script>
