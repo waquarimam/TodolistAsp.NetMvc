@@ -4,7 +4,9 @@
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
    
-<form id="tab" method="post" name="myform"   onsubmit="return require()">
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
         <h4>List</h4>
@@ -36,8 +38,7 @@
             </div>
         </div>
     </div>
-    </form>
-
+    }
 
 
     @section Scripts {
@@ -65,16 +66,11 @@
         var DueDate = $("DueDate").val();
         var MarkDone = $("MarkDone").val();
 
-        if (Title == "" || DueDate =="") {
-            alert("please enter both the field");
-
-
-        }
-        else {
+       
             var insertemp = { "UserId": UserId, "Title": Title, "DueDate": DueDate, "Done": MarkDone };
             $.post('/List/Createn', insertemp,
                 function (data) { if (data == 0) { location = location.href; } }, 'json');
             alert("saved");
         }
-    }
+    
     </script>
