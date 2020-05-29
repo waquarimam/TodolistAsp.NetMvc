@@ -37,7 +37,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" onclick="updatelist"/>
+                <input type="submit" value="Save" class="btn btn-default" onclick="return updatelist()"/>
             </div>
         </div>
     </div>
@@ -50,11 +50,16 @@
         var UserId =$("#UserId").val();
         var Title = $("#Title").val();
         var DueDate = $("#DueDate").val();
-
-        var updatelist ={"Id":Id,"UserId":UserId,"Title":Title,"DueDate":DueDate}
-        $.post('/List/Editn', insertemp,
-            function (data) { if (data == 0) { location = location.href; } }, 'json');
-        alert("saved");
+        if (Title == "" || DueDate == "") {
+            alert("please enter both the field");
+            return false;
+        }
+        else {
+            var updatelist = { "Id": Id, "UserId": UserId, "Title": Title, "DueDate": DueDate }
+            $.post('/List/Editn', insertemp,
+                function (data) { if (data == 0) { location = location.href; } }, 'json');
+            alert("saved");
+        }
     }
 
     $(function () {
